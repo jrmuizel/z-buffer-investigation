@@ -60,13 +60,14 @@ fn main() {
 
     for d in &[512, 1024, 2048] {
         println!("dim {}", d);
-        for f in &[Format::D16Unorm, Format::D16UnormS8Uint, Format::D32Sfloat, Format::D24UnormS8Uint, Format::D32SfloatS8Uint] {
+        for (f, pixel_size) in &[(Format::D16Unorm, 2), (Format::D16UnormS8Uint, 3), (Format::D32Sfloat, 4), (Format::D24UnormS8Uint, 4), (Format::D32SfloatS8Uint, 5)] {
             unsafe {
                 let img = device.create_image(Kind::D2(*d, *d, 1, 1), 1, *f, Tiling::Optimal, Usage::DEPTH_STENCIL_ATTACHMENT,
                                               ViewCapabilities::empty());
                 if let Ok(img) = img {
                     let r = device.get_image_requirements(&img);
-                    println!("{:?} req: {:?}", f, r);
+                    let extra = r.size - (*d**d**pixel_size) as u64;
+                    println!("{:?} req: {:?} extra {} {}", f, r, extra, extra as f64 / (*d**d) as f64);
                 }
             }
         }
