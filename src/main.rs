@@ -58,13 +58,16 @@ fn main() {
     let device = &gpu.device;
     println!("{:?}", adapter.info);
 
-    for f in &[Format::D16Unorm, Format::D16UnormS8Uint, Format::D32Sfloat, Format::D24UnormS8Uint, Format::D32SfloatS8Uint] {
-        unsafe {
-            let img = device.create_image(Kind::D2(1024, 1024, 1, 1), 1, *f, Tiling::Optimal, Usage::DEPTH_STENCIL_ATTACHMENT,
-                                          ViewCapabilities::empty());
-            if let Ok(img) = img {
-                let r = device.get_image_requirements(&img);
-                println!("{:?} req: {:?}", f, r);
+    for d in &[512, 1024, 2048] {
+        println!("dim {}", d);
+        for f in &[Format::D16Unorm, Format::D16UnormS8Uint, Format::D32Sfloat, Format::D24UnormS8Uint, Format::D32SfloatS8Uint] {
+            unsafe {
+                let img = device.create_image(Kind::D2(*d, *d, 1, 1), 1, *f, Tiling::Optimal, Usage::DEPTH_STENCIL_ATTACHMENT,
+                                              ViewCapabilities::empty());
+                if let Ok(img) = img {
+                    let r = device.get_image_requirements(&img);
+                    println!("{:?} req: {:?}", f, r);
+                }
             }
         }
     }
