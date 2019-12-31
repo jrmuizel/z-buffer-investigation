@@ -57,6 +57,7 @@ fn main() {
     };
     let device = &gpu.device;
     println!("{:?}", adapter.info);
+    println!("{:#?}", adapter.physical_device.memory_properties());
 
     for d in &[512, 1024, 2048] {
         println!("dim {}", d);
