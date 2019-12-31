@@ -62,6 +62,11 @@ fn main() {
         println!("dim {}", d);
         for (f, pixel_size) in &[(Format::D16Unorm, 2), (Format::D16UnormS8Uint, 3), (Format::D32Sfloat, 4), (Format::D24UnormS8Uint, 4), (Format::D32SfloatS8Uint, 5)] {
             unsafe {
+                let prop = adapter.physical_device.image_format_properties(*f, 2, Tiling::Optimal, Usage::DEPTH_STENCIL_ATTACHMENT,
+                                              ViewCapabilities::empty());
+                if prop.is_none() {
+                    continue;
+                }
                 let img = device.create_image(Kind::D2(*d, *d, 1, 1), 1, *f, Tiling::Optimal, Usage::DEPTH_STENCIL_ATTACHMENT,
                                               ViewCapabilities::empty());
                 if let Ok(img) = img {
